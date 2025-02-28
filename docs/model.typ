@@ -70,7 +70,8 @@ $ I = lim_(T arrow.r infinity) -1/T sum^(T-1)_(i=0) log p^f (o_(t+i+1)|o_([t:t+i
 
 $ E^o: o_t arrow.r.bar z_t $
 
-観測エンコーダは 学習可能なパラメータ $psi$ を持つ事もあり、 パラメータ付きの観測エンコーダを $E^o_psi$ と書きます。
+観測エンコーダは 学習可能なパラメータを持つ事もあります。これは $theta$ や $phi$ とは独立に損失関数を持ち、学習されます。
+
 
 この観測エンコーダを用いると、
 
@@ -88,3 +89,44 @@ $
 - JEPAやVAEがEncoderには使われます。
 - 原始的には、ダウンサンプリング処理などがあります。
 
+== 4. 時間エンコーダ $E^text("temporal")$ の導入
+
+時間方向に関して特徴量をエンコードする時間エンコーダ$E^text("temporal")$は、隠れ状態 $h^text("temporal")_(t)$を持ちます。 エンコードされた観測を $x_t$ として、次のように表されます:
+
+$
+  x_t, h^text("temporal")_t arrow.l E^text("temporal") (o_t, h^text("temporal")_(t-1))
+$
+
+時間エンコーダは、学習可能なパラメータを持ち、独立した損失関数を用いて学習されます。
+
+== 5. 観測エンコーダ $E^text("space")$ と 時間エンコーダ $E^text("temporal")$ を用いた時空間エンコーディング
+
+観測エンコーダ $E^text("space")$ と 時間エンコーダ $E^text("temporal")$ を用いて、時空間的に特徴量をエンコードし、より高度な特徴量にする:
+
+$
+  z_t arrow.l E^text("space") (o_t) \
+  x_t, h^text("temporal")_t arrow.l E^text("temporal") (z_t, h^text("temporal")_(t-1)) \
+  p^pi, h^(pi)_t arrow.l pi_phi (x_t, h^(pi)_(t-1)) \
+  p^f, h^(f)_t arrow.l f_theta (x_t, a_t, h^(f)_(t-1)) \
+  I_t = -log p^f (x_(t+1)|x_t, a_t, h^(f)_(t-1))
+$
+
+== 6. マルチモーダル処理について
+
+マルチモーダルな好奇心ベースの処理を考える。画像モダリティや音声もダリティをここでは具体的に取り扱う
+
+- 画像の観測を $o^text("v")$ または $o^text("vision")$ とする
+- 音声の観測を $o^text("a")$ または $o^text("audio")$ とする
+
+複数のモダリティの観測を扱う際は、一つの特徴量にエンコードして取り扱うと扱いやすい。
+各モダリティごとに観測エンコーダを用意し、そのエンコード結果を結合して時間エンコーダで特徴量を抽出する。
+
+画像の観測エンコーダを $E^text("v")$, 音声の観測エンコーダを $E^text("a")$ とおく、それぞれのエンコード結果を $z^text("v")_t$, $z^text("a")_t$ とおく。
+時間エンコーダを $E^text("temporal")$ として: 
+
+$
+  z^text("v")_t arrow.l E^text("v") (o^text("v")_t) \
+  z^text("a")_t arrow.l E^text("a") (o^text("a")_t) \
+  z_t := [z^text("v")_t, z^text("a")_t] \
+  x_t, h^text("temporal")_t arrow.l E^text("temporal") (z_t, h^text("temporal")_(t-1))
+$
