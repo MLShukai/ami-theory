@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 for file in docs/*.typ; do
   if [[ $(basename "$file") != _* ]]; then
