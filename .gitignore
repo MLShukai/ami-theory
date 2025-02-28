@@ -1,0 +1,17 @@
+# ビルド成果物
+# dist/
+*.pdf
+
+# エディタの一時ファイル
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS固有のファイル
+.DS_Store
+Thumbs.db
+
+# キャッシュやログ
+.cache/
+logs/
