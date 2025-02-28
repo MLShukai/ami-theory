@@ -1,5 +1,4 @@
 # ビルド成果物
-# dist/
 *.pdf
 
 # エディタの一時ファイル
@@ -15,3 +14,6 @@ Thumbs.db
 # キャッシュやログ
 .cache/
 logs/
+
+# GitHub上でも見れるように ignore
+!dist/*.pdf
